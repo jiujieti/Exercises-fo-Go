@@ -38,7 +38,11 @@ func main() {
 	for line, n := range counts {
 		if n.count > 1 {
 			for _, name := range n.names {
-				fmt.Printf(name, line)
+				if name != "" {
+					fmt.Println(n.count, name, line)
+				} else {
+					fmt.Println(n.count, line)
+				}
 			}
 		}
 	}
@@ -47,8 +51,10 @@ func main() {
 func countLines(f *os.File, counts map[string]countAndFiles, filename string) {
 	input := bufio.NewScanner(f)
 	for input.Scan() {
-		counts[input.Text()].count++
-		counts[input.Text()].names = append(counts[input.Text()].names, filename)
+		x := counts[input.Text()]
+		x.count++
+		x.names = append(x.names, filename)
+		counts[input.Text()] = x
 	}
 }
 

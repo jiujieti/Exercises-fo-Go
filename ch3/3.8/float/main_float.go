@@ -37,9 +37,13 @@ func mandelbrot(x, y *big.Float) color.Color {
 	const iterations = 200
 	const contrast = 15
 
-	var v, w *big.Float
+	var v = big.NewFloat(float64(0))
+	var w = big.NewFloat(float64(0))
 	for n := uint8(0); n < iterations; n++ {
-		var t1, t2, t3, t4 *big.Float
+		var t1 = big.NewFloat(float64(0))
+		var t2 = big.NewFloat(float64(0))
+		var t3 = big.NewFloat(float64(0))
+		var t4 = big.NewFloat(float64(0))
 		t3.Mul(v, v)
 		t4.Mul(w, w)
 		t4.Sub(t3, t4)

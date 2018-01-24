@@ -23,37 +23,35 @@ func main() {
 
 	img := image.NewRGBA(image.Rect(0, 0, width, height))
 	for py := 0; py < height; py++ {
-		y := big.NewFloat(float64(py)/height*(ymax-ymin) + ymin)
+		y := float64(py)/height*(ymax-ymin) + ymin
 		for px := 0; px < width; px++ {
-			x := big.NewFloat(float64(px)/width*(xmax-xmin) + xmin)
+			x := float64(px)/width*(xmax-xmin) + xmin
+			z := complex(x, y)
 			// Image point (px, py) represents complex value z.
-			img.Set(px, py, mandelbrot(x, y))
+			img.Set(px, py, mandelbrot(z))
 		}
 	}
 	png.Encode(os.Stdout, img) // NOTE: ignoring errors
 }
 
-func mandelbrot(x, y *big.Float) color.Color {
+func mandelbrot(z complex128) color.Color {
 	const iterations = 200
 	const contrast = 15
 
-	var v = big.NewFloat(float64(0))
-	var w = big.NewFloat(float64(0))
+	x := (&big.Float{}).SetFloat64(real(z))
+	y := (&big.Float{}).SetFloat64(imag(z))
+	v, w := &big.Float{}, &big.Float{}
 	for n := uint8(0); n < iterations; n++ {
-		var t1 = big.NewFloat(float64(0))
-		var t2 = big.NewFloat(float64(0))
-		var t3 = big.NewFloat(float64(0))
-		var t4 = big.NewFloat(float64(0))
-		t3.Mul(v, v)
-		t4.Mul(w, w)
-		t4.Sub(t3, t4)
-		t1.Add(x, t4)
-		t3.Mul(v, w)
-		t2.Add(t3.Add(t3, t3), y)
-		v = t1
-		w = t2
-		t4.Abs(t3.Add(t1.Mul(t1, t1), t2.Mul(t2, t2)))
-		if t4.Cmp(big.NewFloat(float64(4))) == 1 {
+		t1, t2, t3 := &big.Float{}, &big.Float{}, &big.Float{}
+		t1.Sub(t1.Mul(v, v), t2.Mul(w, w))
+		t1.Add(t1, x)
+		t3.Copy(t1)
+		t1.Mul(v, w)
+		t1.Add(t1.Add(t1, t1), y)
+		w.Copy(t1)
+		v.Copy(t3)
+		t1.Add(t1.Mul(v, v), t2.Mul(w, w))
+		if t1.Cmp(big.NewFloat(float64(4))) == 1 {
 			return color.Gray{255 - contrast*n}
 		}
 	}

@@ -8,10 +8,11 @@
 package main
 
 import (
+	"fmt"
 	"image"
 	"image/color"
 	"image/png"
-	"math/cmplx"
+	"math/big"
 	"os"
 )
 
@@ -29,6 +30,7 @@ func main() {
 			z := complex(x, y)
 			// Image point (px, py) represents complex value z.
 			img.Set(px, py, mandelbrot(z))
+			fmt.Fprintln(os.Stderr, px, py)
 		}
 	}
 	png.Encode(os.Stdout, img) // NOTE: ignoring errors
@@ -38,10 +40,20 @@ func mandelbrot(z complex128) color.Color {
 	const iterations = 200
 	const contrast = 15
 
-	var v complex128
+	x := (&big.Rat{}).SetFloat64(real(z))
+	y := (&big.Rat{}).SetFloat64(imag(z))
+	v, w := &big.Rat{}, &big.Rat{}
 	for n := uint8(0); n < iterations; n++ {
-		v = v*v + z
-		if cmplx.Abs(v) > 2 {
+		t1, t2, t3 := &big.Rat{}, &big.Rat{}, &big.Rat{}
+		t1.Sub(t1.Mul(v, v), t2.Mul(w, w))
+		t1.Add(t1, x)
+		t3.Set(t1)
+		t1.Mul(v, w)
+		t1.Add(t1.Add(t1, t1), y)
+		w.Set(t1)
+		v.Set(t3)
+		t1.Add(t1.Mul(v, v), t2.Mul(w, w))
+		if t1.Cmp(big.NewRat(4, 1)) == 1 {
 			return color.Gray{255 - contrast*n}
 		}
 	}

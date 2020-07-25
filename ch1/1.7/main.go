@@ -24,6 +24,7 @@ func main() {
 		n, err := io.Copy(os.Stdout, resp.Body)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "io: copy %v\n", err)
+			os.Exit(1)
 		}
 		fmt.Printf("copied %d bytes\n", n)
 		resp.Body.Close()

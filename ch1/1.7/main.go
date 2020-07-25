@@ -21,13 +21,16 @@ func main() {
 			fmt.Fprintf(os.Stderr, "fetch: %v\n", err)
 			os.Exit(1)
 		}
-		b, err := io.Copy(os.Stdout, resp.Body)
+		n, err := io.Copy(os.Stdout, resp.Body)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "io: copy %v\n", err)
+		}
+		fmt.Printf("copied %d bytes\n", n)
 		resp.Body.Close()
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "fetch: reading %s: %v\n", url, err)
 			os.Exit(1)
 		}
-		fmt.Printf("%s", string(b))
 	}
 }
 

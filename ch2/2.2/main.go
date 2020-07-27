@@ -4,6 +4,7 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"os"
 	"strconv"
@@ -12,17 +13,27 @@ import (
 )
 
 func main() {
-	for _, arg := range os.Args[1:] {
-		num, err := strconv.ParseFloat(arg, 64)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "KgP: %v\n", err)
-			os.Exit(1)
+	if len(os.Args) > 1 {
+		for _, arg := range os.Args[1:] {
+			convert(arg)
 		}
-		k := weightconv.Kilograms(num)
-		p := weightconv.Pounds(num)
-		fmt.Printf("%s = %s, %s = %s\n",
-			k, weightconv.KgToP(k), p, weightconv.PToKg(p))
+	} else {
+		input := bufio.NewScanner(os.Stdin)
+		for input.Scan() {
+			convert(input.Text())
+		}
 	}
+}
+
+func convert(v string) {
+	n, err := strconv.ParseFloat(v, 64)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "KgP: %v\n", err)
+		os.Exit(1)
+	}
+	kg := weightconv.Kilograms(n)
+	p := weightconv.Pounds(n)
+	fmt.Printf("%s = %s, %s = %s\n", kg, weightconv.KgToP(kg), p, weightconv.PToKg(p))
 }
 
 //!-

@@ -36,9 +36,10 @@ func popCount1(x uint64) int {
 }
 
 func popCount2(x uint64) int {
-	var count byte
-	for i := 0; i < 8; i++ {
-		count += pc[byte(x>>(i*8))]
+	var count uint64
+	for i := 0; i < 64; i++ {
+		count += (x & 1)
+		x = x >> 1
 	}
 	return int(count)
 }

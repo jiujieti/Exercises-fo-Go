@@ -43,6 +43,24 @@ func popCount2(x uint64) int {
 	return int(count)
 }
 
+func popCount3(x uint64) int {
+	var count uint64
+	for i := 0; i < 64; i++ {
+		count += (x & 1)
+		x = x >> 1
+	}
+	return int(count)
+}
+
+func popCount4(x uint64) int {
+	var count int
+	for x != 0 {
+		x = x & (x - 1)
+		count++
+	}
+	return count
+}
+
 func main() {
 	if len(os.Args) != 2 {
 		fmt.Println("please provide a number")
@@ -56,6 +74,8 @@ func main() {
 	}
 	meature(popCount1, n)
 	meature(popCount2, n)
+	meature(popCount3, n)
+	meature(popCount4, n)
 }
 
 func meature(f func(x uint64) int, x uint64) {

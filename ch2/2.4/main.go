@@ -61,6 +61,9 @@ func main() {
 
 func meature(f func(x uint64) int, x uint64) {
 	start := time.Now()
-	n := f(x)
-	fmt.Printf("popcount=%d takes %d ms\n", n, time.Since(start))
+	var n int
+	for i := 0; i < 10000; i++ {
+		n = f(x)
+	}
+	fmt.Printf("popcount=%d takes %v\n", n, time.Since(start)/10000)
 }

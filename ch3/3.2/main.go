@@ -1,3 +1,10 @@
+// Copyright © 2016 Alan A. A. Donovan & Brian W. Kernighan.
+// License: https://creativecommons.org/licenses/by-nc-sa/4.0/
+
+// See page 58.
+//!+
+
+// Surface computes an SVG rendering of a 3-D surface function.
 package main
 
 import (
@@ -48,5 +55,8 @@ func corner(i, j int) (float64, float64) {
 }
 
 func f(x, y float64) float64 {
-	return math.Sin(x*y) / (x * y)
+	// return math.Sin(x*y) / (x * y)
+	return math.Sin(x*y) / (math.Abs(x) + math.Abs(y))
 }
+
+//!-

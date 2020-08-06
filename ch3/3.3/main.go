@@ -33,9 +33,9 @@ func main() {
 			bx, by, peak := corner(i, j)
 			cx, cy, _ := corner(i, j+1)
 			dx, dy, _ := corner(i+1, j+1)
-			color := "#ff0000"
+			color := "#ff8888"
 			if peak {
-				color = "#0000ff"
+				color = "#8888ff"
 			}
 			fmt.Printf("<polygon points='%g,%g %g,%g %g,%g %g,%g' style='fill:%s'/>\n",
 				ax, ay, bx, by, cx, cy, dx, dy, color)
@@ -64,10 +64,7 @@ func corner(i, j int) (float64, float64, bool) {
 
 func f(x, y float64) float64 {
 	r := math.Hypot(x, y) // distance from (0,0)
-	if r != 0 {
-		return math.Sin(r) / r
-	}
-	return 0
+	return math.Sin(r) / r
 }
 
 //!-

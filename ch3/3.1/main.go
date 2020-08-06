@@ -33,9 +33,9 @@ func main() {
 			bx, by := corner(i, j)
 			cx, cy := corner(i, j+1)
 			dx, dy := corner(i+1, j+1)
-			// if math.IsNaN(ax) || math.IsNaN(bx) || math.IsNaN(cx) || math.IsNaN(dx) {
-			// 	continue
-			// }
+			if math.IsNaN(ax) || math.IsNaN(bx) || math.IsNaN(cx) || math.IsNaN(dx) {
+				continue
+			}
 			fmt.Printf("<polygon points='%g,%g %g,%g %g,%g %g,%g'/>\n",
 				ax, ay, bx, by, cx, cy, dx, dy)
 		}
@@ -51,10 +51,9 @@ func corner(i, j int) (float64, float64) {
 	// Compute surface height z.
 	z := f(x, y)
 
-	// if math.IsInf(z, 0) {
-	// 	return math.NaN(), math.NaN()
-	// }
-
+	if math.IsInf(z, 0) || math.IsNaN(z) {
+		return math.NaN(), math.NaN()
+	}
 	// Project (x,y,z) isometrically onto 2-D SVG canvas (sx,sy).
 	sx := width/2 + (x-y)*cos30*xyscale
 	sy := height/2 + (x+y)*sin30*xyscale - z*zscale
@@ -63,10 +62,7 @@ func corner(i, j int) (float64, float64) {
 
 func f(x, y float64) float64 {
 	r := math.Hypot(x, y) // distance from (0,0)
-	if r != 0 {
-		return math.Sin(r) / r
-	}
-	return 0
+	return math.Sin(r) / r
 }
 
 //!-

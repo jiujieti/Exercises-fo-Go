@@ -48,9 +48,9 @@ func newton(z complex128) color.Color {
 	}
 	// fmt.Fprintf(os.Stderr, "z=%v iterations=%d\n", z, iterations)
 	if iterations == max {
-		return color.Black
+		return color.White
 	}
-	a := uint8(iterations * contrast)
+	a := 255 - uint8(iterations*contrast)
 	if distance(z, 1) < threshold {
 		return color.RGBA{0xff, 0x00, 0x00, a}
 	} else if distance(z, -1) < threshold {

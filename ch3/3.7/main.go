@@ -11,12 +11,13 @@ import (
 	"image"
 	"image/color"
 	"image/png"
+	"math/cmplx"
 	"os"
 )
 
 func main() {
 	const (
-		xmin, ymin, xmax, ymax = -2, -2, +2, +2
+		xmin, ymin, xmax, ymax = -10, -10, +10, +10
 		width, height          = 1024, 1024
 	)
 
@@ -34,14 +35,33 @@ func main() {
 }
 
 func newton(z complex128) color.Color {
-	const iterations = 200
-	const contrast = 15
 
-	for n := uint8(0); n < iterations; n++ {
-		if z == 1 || z == -1 || z == 1i || z == -1i {
-			return color.Gray{255 - contrast*n}
-		}
-		z -= (z*z*z*z - 1) / (4 * z * z * z)
+	const max = 30
+	const contrast = 8
+	const threshold = 1e-6
+
+	// var v complex128
+	iterations := 0
+	for distance(z, 1) >= threshold && distance(z, -1) >= threshold && distance(z, -1i) >= threshold && distance(z, 1i) >= threshold && iterations < max {
+		z = (3*z + 1/(z*z*z)) / 4
+		iterations++
 	}
-	return color.Black
+	// fmt.Fprintf(os.Stderr, "z=%v iterations=%d\n", z, iterations)
+	if iterations == max {
+		return color.Black
+	}
+	a := uint8(iterations * contrast)
+	if distance(z, 1) < threshold {
+		return color.RGBA{0xff, 0x00, 0x00, a}
+	} else if distance(z, -1) < threshold {
+		return color.RGBA{0xff, 0xff, 0x00, a}
+	} else if distance(z, 1i) < threshold {
+		return color.RGBA{0x00, 0xff, 0x00, a}
+	} else {
+		return color.RGBA{0x00, 0x00, 0xff, a}
+	}
+}
+
+func distance(z complex128, r complex128) float64 {
+	return cmplx.Abs(z - r)
 }

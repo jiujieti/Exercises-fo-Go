@@ -17,7 +17,7 @@ import (
 
 func main() {
 	const (
-		xmin, ymin, xmax, ymax = -2, -2, +2, +2
+		xmin, ymin, xmax, ymax = -0.55, -0.55, -0.54, -0.54
 		width, height          = 1024, 1024
 	)
 
@@ -47,5 +47,3 @@ func mandelbrot(z complex128) color.Color {
 	}
 	return color.Black
 }
-
-//!-

@@ -17,7 +17,7 @@ import (
 
 func main() {
 	const (
-		xmin, ymin, xmax, ymax = -2, -2, +2, +2
+		xmin, ymin, xmax, ymax = -0.55, -0.55, -0.54, -0.54
 		width, height          = 1024, 1024
 	)
 
@@ -38,24 +38,22 @@ func mandelbrot(z complex128) color.Color {
 	const iterations = 200
 	const contrast = 15
 
-	x := (&big.Float{}).SetFloat64(real(z))
-	y := (&big.Float{}).SetFloat64(imag(z))
-	v, w := &big.Float{}, &big.Float{}
+	xp := big.NewFloat(real(z))
+	yp := big.NewFloat(imag(z))
+	r, i := &big.Float{}, &big.Float{}
 	for n := uint8(0); n < iterations; n++ {
 		t1, t2, t3 := &big.Float{}, &big.Float{}, &big.Float{}
-		t1.Sub(t1.Mul(v, v), t2.Mul(w, w))
-		t1.Add(t1, x)
-		t3.Copy(t1)
-		t1.Mul(v, w)
-		t1.Add(t1.Add(t1, t1), y)
-		w.Copy(t1)
-		v.Copy(t3)
-		t1.Add(t1.Mul(v, v), t2.Mul(w, w))
+		t1.Sub(t1.Mul(r, r), t2.Mul(i, i))
+		t1.Add(t1, xp)
+		t2.Mul(r, i)
+		t3.Add(t2, t2)
+		t3.Add(t3, yp)
+		r.Copy(t1)
+		i.Copy(t3)
+		t1.Add(t1.Mul(r, r), t2.Mul(i, i))
 		if t1.Cmp(big.NewFloat(float64(4))) == 1 {
 			return color.Gray{255 - contrast*n}
 		}
 	}
 	return color.Black
 }
-
-//!-

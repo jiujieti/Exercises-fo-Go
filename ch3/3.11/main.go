@@ -31,37 +31,27 @@ func main() {
 //!+
 // comma inserts commas in a non-negative decimal integer string.
 func comma(s string) string {
-	var sign, intPart, fracPart, str string
-	if s[0] == '+' || s[0] == '-' {
-		sign = s[:1]
-		s = s[1:]
+	i := strings.Index(s, ".")
+	if i == -1 {
+		return leftComma(s)
 	}
-	temp := strings.Split(s, ".")
-	intPart = temp[0]
-	if len(temp) > 1 {
-		fracPart = temp[1]
+	return leftComma(s[:i]) + "." + rightComma(s[i+1:])
+}
+
+func leftComma(s string) string {
+	n := len(s)
+	if n <= 3 || n == 4 && s[0] == '-' {
+		return s
 	}
-	for n := len(intPart); n >= 0; n -= 3 {
-		if n-3 <= 0 {
-			str = intPart[0:n] + str
-			break
-		}
-		str = "," + intPart[n-3:n] + str
+	return leftComma(s[:n-3]) + "," + s[n-3:]
+}
+
+func rightComma(s string) string {
+	n := len(s)
+	if n <= 3 {
+		return s
 	}
-	if fracPart != "" {
-		str += "."
-		for n := 0; n < len(fracPart); n += 3 {
-			if n+3 >= len(fracPart) {
-				str += fracPart[n:len(fracPart)]
-				break
-			}
-			str += fracPart[n:n+3] + ","
-		}
-	}
-	if sign != "" {
-		str = sign + str
-	}
-	return str
+	return s[:3] + "," + rightComma(s[3:])
 }
 
 //!-

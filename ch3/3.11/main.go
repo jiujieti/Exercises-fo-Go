@@ -29,7 +29,6 @@ func main() {
 }
 
 //!+
-// comma inserts commas in a non-negative decimal integer string.
 func comma(s string) string {
 	i := strings.Index(s, ".")
 	if i == -1 {
@@ -40,7 +39,7 @@ func comma(s string) string {
 
 func leftComma(s string) string {
 	n := len(s)
-	if n <= 3 || n == 4 && s[0] == '-' {
+	if n <= 3 || (n == 4 && s[0] == '-') {
 		return s
 	}
 	return leftComma(s[:n-3]) + "," + s[n-3:]
